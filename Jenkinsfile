@@ -27,7 +27,8 @@ pipeline{
             steps{
                 sh 'mvn checkstyle:checkstyle'
             }
-        }stage('build'){
+        }
+        stage('build'){
             steps{
                 sh 'mvn clean package'
             }
@@ -60,7 +61,7 @@ pipeline{
                     protocol: 'http',
                     nexusUrl: 'http://192.168.56.20:8081',
                     groupId: 'QA',
-                    version: ${env.BUILD_ID}-${env.BUILD_TIMESTAMP},
+                    version: "${env.BUILD_ID}-${env.BUILD_TIMESTAMP}",
                     repository: 'vpro-repo',
                     credentialsId: 'nexuscred',
                     artifacts: [
