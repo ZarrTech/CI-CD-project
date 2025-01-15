@@ -75,12 +75,12 @@ pipeline{
         // }
     }
 
-    post{
-        always{
+    post {
+        always {
             echo 'slack notification'
             slackSend channel: '#devOpscicd',
-            color: COLOR_MAP[currentBuild.result],
-            message:"*${currentBuild.currentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n more details at ${env.BUILD_URL}",
+                      color: COLOR_MAP[currentBuild.result],
+                      message: "*${currentBuild.currentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n more details at ${env.BUILD_URL}"
         }
     }
 }
