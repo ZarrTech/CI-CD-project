@@ -1,3 +1,8 @@
+def COLOR_MAP = [
+    "SUCCESS": 'good',
+    "FAILURE": 'danger',
+]
+
 pipeline{
 
     agent any
@@ -62,8 +67,17 @@ pipeline{
             }
         }
 
-        stage('build docker image'){
-            sh 'docker comopse build -t app ./app'
+        // stage('build docker image'){
+        //     sh 'docker compose build -t app ./app'
+        // }
+    }
+
+    post('Always run'){
+        always{
+            echo 'slack notification'
+            slackSend channel: '#devOpscicd',
+            color: COLOR_MAP[currentBuild.result],
+            message:"*${currentBuild.ccurrentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n more details at ${env.BUILD_URL}",
         }
     }
 }
