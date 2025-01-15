@@ -70,9 +70,6 @@ pipeline{
             }
         }
 
-        // stage('build docker image'){
-        //     sh 'docker compose build -t app ./app'
-        // }
     }
 
     post {
