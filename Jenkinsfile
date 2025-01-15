@@ -58,7 +58,7 @@ pipeline{
                 nexusArtifactUploader(
                     nexusVersion: 'nexus3',
                     protocol: 'http',
-                    nexusUrl: 'http://http://192.168.56.20:8081',
+                    nexusUrl: 'http://192.168.56.20:8081',
                     groupId: 'QA',
                     version: ${env.BUILD_ID}-${env.BUILD_TIMESTAMP},
                     repository: 'vpro-repo',
@@ -75,12 +75,12 @@ pipeline{
         // }
     }
 
-    post('Always run'){
+    post{
         always{
             echo 'slack notification'
             slackSend channel: '#devOpscicd',
             color: COLOR_MAP[currentBuild.result],
-            message:"*${currentBuild.ccurrentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n more details at ${env.BUILD_URL}",
+            message:"*${currentBuild.currentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n more details at ${env.BUILD_URL}",
         }
     }
 }
