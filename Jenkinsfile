@@ -8,7 +8,8 @@ pipeline{
     agent any
 
     environment {
-    JAVA_HOME = '/opt/java/openjdk'
+        JAVA_HOME = '/opt/java/openjdk'
+        PATH = "${JAVA_HOME}/bin:${env.PATH}"
     }
 
     tools{
@@ -22,8 +23,15 @@ pipeline{
                 git 'https://github.com/devopshydclub/vprofile-repo.git'
             }
         }
+        stage('Verify JAVA_HOME') {
+            steps {
+                sh 'echo $JAVA_HOME'
+                sh '/opt/java/openjdk/bin/java -version'
+            }
+}
         stage('Unit test'){
             steps{
+                sh "mvn -Djava.home=$JAVA_HOME test"
                 sh 'mvn test'
             }
         }
