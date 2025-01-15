@@ -20,7 +20,7 @@ pipeline{
     stages{
         stage('clone repo'){
             steps{
-                git 'https://github.com/devopshydclub/vprofile-repo.git'
+                git 'https://github.com/devopshydclub/vprofile-project.git'
             }
         }
         stage('Verify JAVA_HOME') {
