@@ -7,6 +7,10 @@ pipeline{
 
     agent any
 
+    environment {
+    JAVA_HOME = '/opt/java/openjdk'
+    }
+
     tools{
         maven 'maven'
         jdk 'jdk17'
@@ -76,7 +80,7 @@ pipeline{
     post {
         always {
             echo 'slack notification'
-            slackSend channel: '#devOpscicd',
+            slackSend channel: '#devOps-cicd',
                       color: COLOR_MAP[currentBuild.result],
                       message: "*${currentBuild.currentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n more details at ${env.BUILD_URL}"
         }
