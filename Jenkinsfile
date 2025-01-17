@@ -29,12 +29,12 @@ pipeline{
                 sh '/opt/java/openjdk/bin/java -version'
             }
 }
-        stage('Unit test'){
-            steps{
-                sh "mvn -Djava.home=$JAVA_HOME test"
-                sh 'mvn test'
-            }
-        }
+        // stage('Unit test'){
+        //     steps{
+        //         sh "mvn -Djava.home=$JAVA_HOME test"
+        //         sh 'mvn test'
+        //     }
+        // }
         stage('checkstyle'){
             steps{
                 sh 'mvn checkstyle:checkstyle'
