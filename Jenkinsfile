@@ -20,7 +20,7 @@ pipeline{
     stages{
         stage('clone repo'){
             steps{
-                git 'https://github.com/ZarrTech/CI-CD-project.git'
+                git branch: 'atom', url: 'https://github.com/hkhcoder/vprofile-project.git'
             }
         }
         stage('Verify JAVA_HOME') {
