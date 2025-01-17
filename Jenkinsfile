@@ -28,7 +28,12 @@ pipeline{
                 sh 'echo $JAVA_HOME'
                 sh '/opt/java/openjdk/bin/java -version'
             }
-}
+        }
+        stage('build'){
+            steps{
+                sh 'mvn clean package -X'
+            }
+        }
         stage('Unit test'){
             steps{
                 sh "mvn -Djava.home=$JAVA_HOME test"
@@ -40,12 +45,6 @@ pipeline{
                 sh 'mvn checkstyle:checkstyle'
             }
         }
-        stage('build'){
-            steps{
-                sh 'mvn clean package -X'
-            }
-        }
-
         stage('sonarqube analysis'){
             environment{
                 scannerHome = tool 'sonar6.2'
