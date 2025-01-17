@@ -8,7 +8,7 @@ pipeline{
     agent any
 
     environment {
-        JAVA_HOME = '/opt/java/openjdk'
+        JAVA_HOME = '/usr/lib/jvm/temurin-11-jdk-amd64'
         PATH = "${JAVA_HOME}/bin:${env.PATH}"
     }
 
@@ -20,7 +20,7 @@ pipeline{
     stages{
         stage('clone repo'){
             steps{
-                git 'https://github.com/ZarrTech/CI-CD-project.git'
+                git 'https://github.com/devopshydclub/vprofile-project.git'
             }
         }
         stage('Verify JAVA_HOME') {
