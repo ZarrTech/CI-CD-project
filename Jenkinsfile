@@ -100,13 +100,13 @@ pipeline{
                     )
             }
         }
-        stage('docker build'){
-            steps{
-                script{
-                docker.build('vproapp', 'Dockerfile')
-                }
-            }
-        }
+        // stage('docker build'){
+        //     steps{
+        //         script{
+        //         docker.build('vproapp', 'Dockerfile')
+        //         }
+        //     }
+        // }
         stage('deploy to app server'){
             steps{
                 sh"""
