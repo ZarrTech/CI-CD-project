@@ -103,7 +103,7 @@ pipeline{
         stage('docker build'){
             steps{
                 script{
-                docker.build('vproapp', './app/')
+                docker.build('vproapp', 'Dockerfile')
                 }
             }
         }
