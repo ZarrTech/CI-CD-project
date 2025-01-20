@@ -27,7 +27,7 @@ pipeline{
         stage('Fetch Dockerfile') {
     steps {
         sh '''
-            git clone https://github.com/ZarrTech/CI-CD-project.git temp-repo
+            git clone git@github.com:ZarrTech/CI-CD-project.git temp-repo
             cp temp-repo/app/Dockerfile .
             rm -rf temp-repo
         '''
