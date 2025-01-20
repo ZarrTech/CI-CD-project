@@ -65,6 +65,7 @@ pipeline{
                         -Dsonar.host.url=http://192.168.56.20:9000 \
                         -Dsonar.ws.timeout=60
                     """
+                }
             }
         }
         stage('quality gate'){
@@ -96,7 +97,6 @@ pipeline{
                 docker.build('vproapp')
                 }
             }
-            }
         }
         stage('deploy to app server'){
             steps{
@@ -108,7 +108,6 @@ pipeline{
             }
         }
     }
-
     post {
         always {
             echo 'slack notification'
