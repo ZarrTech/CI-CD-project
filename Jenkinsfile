@@ -26,11 +26,11 @@ pipeline{
         }
         stage('Fetch Dockerfile') {
             steps {
-                sh '''
+                sh """
                     git clone git@github.com:ZarrTech/CI-CD-project.git temp-repo
                     cp temp-repo/app/Dockerfile .
                     rm -rf temp-repo
-                '''
+                """
             }
         }
         stage('Verify JAVA_HOME') {
