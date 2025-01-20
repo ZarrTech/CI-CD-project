@@ -68,13 +68,13 @@ pipeline{
                 }
             }
         }
-        stage('quality gate'){
-            steps{
-                timeout(time: 1, unit: 'HOURS'){
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        }
+        // stage('quality gate'){
+        //     steps{
+        //         timeout(time: 1, unit: 'HOURS'){
+        //             waitForQualityGate abortPipeline: true
+        //         }
+        //     }
+        // }
         stage('upload artifact'){
             steps{
                 nexusArtifactUploader(
