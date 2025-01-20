@@ -10,6 +10,7 @@ pipeline{
     environment {
         JAVA_HOME = '/usr/lib/jvm/temurin-11-jdk-amd64'
         PATH = "${JAVA_HOME}/bin:${env.PATH}"
+        DOCKER_HUB_CREDENTIALS = 'dockerID'
     }
 
     tools{
@@ -31,7 +32,7 @@ pipeline{
         }
         stage('build'){
             steps{
-                sh 'mvn clean package -X'
+                sh 'mvn -X clean package'
             }
         }
         stage('Unit test'){
@@ -64,6 +65,12 @@ pipeline{
                         -Dsonar.host.url=http://192.168.56.20:9000 \
                         -Dsonar.ws.timeout=60
                     """
+            }
+        }
+        stage('quality gate'){
+            steps{
+                timeout(time: 1, unit: 'HOURS'){
+                    waitForQualityGate abortPipeline: true
                 }
             }
         }
@@ -83,7 +90,23 @@ pipeline{
                     )
             }
         }
-
+        stage('docker build'){
+            steps{
+                script{
+                docker.build('vproapp')
+                }
+            }
+            }
+        }
+        stage('deploy to app server'){
+            steps{
+                sh"""
+                 curl -o vprofile-v2.war http://192.168.56.20:8081/repository/vpro-repo/QA/vprofile/${env.BUILD_ID}-${env.BUILD_TIMESTAMP}/vprofile-v2.war
+                 docker cp vprofile-v2.war vproapp:/usr/local/tomcat/webapps/ROOT.war
+                 docker restart vproapp
+                """
+            }
+        }
     }
 
     post {

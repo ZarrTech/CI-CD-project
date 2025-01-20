@@ -32,14 +32,10 @@ services:
       - nexus_data:/nexus-data
 
   app:
-    build: 
-      context: ./app
     image: vprocontainers/vprofileapp
     container_name: vproapp
     ports:
       - "8082:8080"
-    volumes:
-      - ./target/vprofile.war:/usr/local/tomcat/webapps/vprofile.war
 
  
 
