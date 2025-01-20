@@ -24,6 +24,15 @@ pipeline{
                 git branch: 'atom', url: 'https://github.com/hkhcoder/vprofile-project.git'
             }
         }
+        stage('Fetch Dockerfile') {
+    steps {
+        sh '''
+            git clone https://github.com/ZarrTech/CI-CD-project.git temp-repo
+            cp temp-repo/app/Dockerfile .
+            rm -rf temp-repo
+        '''
+    }
+}
         stage('Verify JAVA_HOME') {
             steps {
                 sh 'echo $JAVA_HOME'
@@ -94,7 +103,7 @@ pipeline{
         stage('docker build'){
             steps{
                 script{
-                docker.build('app')
+                docker.build('vproapp', './app/')
                 }
             }
         }
