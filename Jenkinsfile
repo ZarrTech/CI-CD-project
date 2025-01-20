@@ -25,14 +25,14 @@ pipeline{
             }
         }
         stage('Fetch Dockerfile') {
-    steps {
-        sh '''
-            git clone git@github.com:ZarrTech/CI-CD-project.git temp-repo
-            cp temp-repo/app/Dockerfile .
-            rm -rf temp-repo
-        '''
-    }
-}
+            steps {
+                sh '''
+                    git clone git@github.com:ZarrTech/CI-CD-project.git temp-repo
+                    cp temp-repo/app/Dockerfile .
+                    rm -rf temp-repo
+                '''
+            }
+        }
         stage('Verify JAVA_HOME') {
             steps {
                 sh 'echo $JAVA_HOME'
