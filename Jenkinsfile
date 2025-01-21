@@ -111,7 +111,7 @@ pipeline{
         stage('deploy to app server'){
             steps{
                 sh"""
-                 docker-compose up -d vproapp vprodb vproweb
+                 docker compose up -d vproapp vprodb vproweb
                  docker ps
                  curl -o vprofile-v2.war http://192.168.56.20:8081/repository/vpro-repo/QA/vprofile/${env.BUILD_ID}-${env.BUILD_TIMESTAMP}/vprofile-v2.war
                  docker cp vprofile-v2.war vproapp:/usr/local/tomcat/webapps/ROOT.war
