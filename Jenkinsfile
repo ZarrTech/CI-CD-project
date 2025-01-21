@@ -8,7 +8,7 @@ pipeline{
     agent any
 
     environment {
-        JAVA_HOME = '/usr/lib/jvm/temurin-11-jdk-amd64'
+        JAVA_HOME = '/opt/java/openjdk'
         PATH = "${JAVA_HOME}/bin:${env.PATH}"
         DOCKER_HUB_CREDENTIALS = 'dockerID'
     }
@@ -24,15 +24,15 @@ pipeline{
                 git branch: 'atom', url: 'https://github.com/hkhcoder/vprofile-project.git'
             }
         }
-        // stage('Fetch Dockerfile') {
-        //     steps {
-        //         sh """
-        //             git clone git@github.com:ZarrTech/CI-CD-project.git temp-repo
-        //             cp temp-repo/app/Dockerfile .
-        //             rm -rf temp-repo
-        //         """
-        //     }
-        // }
+        stage('Fetch Dockerfile') {
+            steps {
+                sh """
+                    git clone git@github.com:ZarrTech/CI-CD-project.git temp-repo
+                    cp temp-repo/app/Dockerfile .
+                    rm -rf temp-repo
+                """
+            }
+        }
         stage('Verify JAVA_HOME') {
             steps {
                 sh 'echo $JAVA_HOME'
@@ -110,6 +110,7 @@ pipeline{
         stage('deploy to app server'){
             steps{
                 sh"""
+                 docker compose up -d vproapp vprodb vproweb
                  curl -o vprofile-v2.war http://192.168.56.20:8081/repository/vpro-repo/QA/vprofile/${env.BUILD_ID}-${env.BUILD_TIMESTAMP}/vprofile-v2.war
                  docker cp vprofile-v2.war vproapp:/usr/local/tomcat/webapps/ROOT.war
                  docker restart vproapp
