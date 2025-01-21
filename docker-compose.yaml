@@ -38,7 +38,9 @@ services:
       - nexus_data:/nexus-data
 
   vproapp:
-    image: vprocontainers/vprofileapp
+    image: zarrcloud/vprofileapp
+    build:
+      context: ./app
     container_name: vproapp
     ports:
       - "8082:8080"
