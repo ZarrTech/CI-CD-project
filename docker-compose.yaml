@@ -37,7 +37,7 @@ services:
     volumes:
       - nexus_data:/nexus-data
 
-  app:
+  vproapp:
     image: vprocontainers/vprofileapp
     container_name: vproapp
     ports:
