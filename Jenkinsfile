@@ -27,8 +27,9 @@ pipeline{
         stage('Fetch Dockerfile') {
             steps {
                 sh """
+                    rm -rf temp-repo
                     git clone git@github.com:ZarrTech/CI-CD-project.git temp-repo
-                    cp temp-repo/* .
+                    cp -r temp-repo/Jenkinsfile temp-repo/Vagrantfile temp-repo/app temp-repo/configs temp-repo/db temp-repo/docker-compose.yaml temp-repo/jenkins temp-repo/web .
                     rm -rf temp-repo
                 """
             }
@@ -103,14 +104,14 @@ pipeline{
         stage('docker build'){
             steps{
                 script{
-                docker.build('vproapp', 'app/')
+                docker.build('vproapp', './app')
                 }
             }
         }
         stage('deploy to app server'){
             steps{
                 sh"""
-                 docker-compose up -d vproapp vprodb vproweb
+                 docker-compose up -d vproapp
                  docker ps
                  curl -o vprofile-v2.war http://192.168.56.20:8081/repository/vpro-repo/QA/vprofile/${env.BUILD_ID}-${env.BUILD_TIMESTAMP}/vprofile-v2.war
                  docker cp vprofile-v2.war vproapp:/usr/local/tomcat/webapps/ROOT.war
