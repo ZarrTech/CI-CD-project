@@ -10,7 +10,8 @@ pipeline{
     environment {
         JAVA_HOME = '/opt/java/openjdk'
         PATH = "${JAVA_HOME}/bin:${env.PATH}"
-        DOCKER_HUB_CREDENTIALS = 'dockerID'
+        S3_BUCKET_NAME = 'vproartifact'
+        S3_BUCKET_REGION = 'us-east-1'
     }
 
     tools{
@@ -85,22 +86,7 @@ pipeline{
         //         }
         //     }
         // }
-        stage('upload artifact'){
-            steps{
-                nexusArtifactUploader(
-                    nexusVersion: 'nexus3',
-                    protocol: 'http',
-                    nexusUrl: '192.168.56.20:8081',
-                    groupId: 'QA',
-                    version: "${env.BUILD_ID}-${env.BUILD_TIMESTAMP}",
-                    repository: 'vpro-repo',
-                    credentialsId: 'nexuscred',
-                    artifacts: [
-                        [artifactId: 'vprofile', file: 'target/vprofile-v2.war', type: 'war']
-                    ]
-                    )
-            }
-        }
+        stage('')
         stage('docker build'){
             steps{
                 script{
@@ -108,15 +94,34 @@ pipeline{
                 }
             }
         }
-        stage('deploy to app server'){
+        stage('upload to s3'){
             steps{
-                sh"""
-                 docker-compose up -d vproapp
-                 docker ps
-                 curl -o vprofile-v2.war http://192.168.56.20:8081/repository/vpro-repo/QA/vprofile/${env.BUILD_ID}-${env.BUILD_TIMESTAMP}/vprofile-v2.war
-                 docker cp vprofile-v2.war vproapp:/usr/local/tomcat/webapps/ROOT.war
-                 docker restart vproapp
-                """
+              script{
+                try {
+                    withAWS(credentials: 's3Credentials', region: '${S3_BUCKET_REGION}')
+                    echo 'uploading to s3'
+                    sh"""
+                      # define bucket name and artifact
+                       BUCKET_NAME=vproartifact
+                       ARTIFACT_PATH=target/vprofile-v2.war
+
+                       # ensure the artifact exit
+                       if [! -f "$ARTIFACT_PATH"];
+                       then
+                         echo "artifact not found: $ARTIFACT_PATH"
+                         exit 1
+                       fi
+
+                       # upload artifact to s3
+                       aws s3 cp $ARTIFACT_PATH s3://$BUCKET_NAME  
+                    """
+                }
+                catch (exception e) {
+                    echo "error occured during artifact upload: ${e.message}"
+                    currentBuild.result = 'FAILURE'
+                    error('stopping the pipline due to s3 upload failure.')
+                }
+              }
             }
         }
     }
