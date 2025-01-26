@@ -1,6 +1,8 @@
 def COLOR_MAP = [
     "SUCCESS": 'good',
     "FAILURE": 'danger',
+    "UNSTABLE": 'warning',
+    "ABORTED" : 'gray'
 ]
 
 pipeline{
@@ -12,6 +14,7 @@ pipeline{
         PATH = "${JAVA_HOME}/bin:${env.PATH}"
         S3_BUCKET_NAME = 'vproartifact'
         S3_BUCKET_REGION = 'us-east-1'
+        s3Credentials= 's3Credentials'
     }
 
     tools{
@@ -86,42 +89,58 @@ pipeline{
         //         }
         //     }
         // }
-        stage('')
         stage('docker build'){
             steps{
                 script{
                 docker.build('vproapp', './app')
                 }
+                sh"""
+                   docker-compose up -d vproapp
+                """
             }
         }
         stage('upload to s3'){
             steps{
               script{
                 try {
-                    withAWS(credentials: 's3Credentials', region: '${S3_BUCKET_REGION}')
-                    echo 'uploading to s3'
-                    sh"""
-                      # define bucket name and artifact
-                       BUCKET_NAME=vproartifact
-                       ARTIFACT_PATH=target/vprofile-v2.war
+                    withAWS(credentials: s3Credentials, region: S3_BUCKET_REGION) {
+                        echo 'uploading to s3'
+                        
+                        //define bucket name and artifact
+                        def BUCKET_NAME = 'vproartifact'
+                        def ARTIFACT_PATH = 'target/vprofile-v2.war'
 
-                       # ensure the artifact exit
-                       if [! -f "$ARTIFACT_PATH"];
-                       then
-                         echo "artifact not found: $ARTIFACT_PATH"
-                         exit 1
-                       fi
-
-                       # upload artifact to s3
-                       aws s3 cp $ARTIFACT_PATH s3://$BUCKET_NAME  
-                    """
+                        sh"""
+                         if [ ! -f "$ARTIFACT_PATH" ] || [ ! -s "$ARTIFACT_PATH" ]; then
+                            echo "Artifact not found or empty"
+                            exit 1
+                         fi
+                            aws --version
+                            aws s3 ls s3://${BUCKET_NAME} --region ${S3_BUCKET_REGION}
+                            ls -l target/
+                            echo "uploading ${ARTIFACT_PATH} to s3://${BUCKET_NAME}"      
+                            aws s3 cp ${ARTIFACT_PATH} s3://${BUCKET_NAME}/ --storage-class STANDARD --expected-size 83500000
+                        """
+                    }
                 }
-                catch (exception e) {
-                    echo "error occured during artifact upload: ${e.message}"
+                catch (Exception e) {
+                    echo "error occured during artifact upload: ${e.getMessage()}"
                     currentBuild.result = 'FAILURE'
                     error('stopping the pipline due to s3 upload failure.')
                 }
               }
+            }
+        }
+        stage('deploy to app server'){
+            steps{
+                withAWS(credentials: s3Credentials, region: S3_BUCKET_REGION) {
+                    echo 'deploying to app server'
+                    sh"""
+                        rm -rf /usr/local/tomcat/webapps/ROOT*
+                        aws s3 cp s3://${S3_BUCKET_NAME}/vprofile-v2.war /usr/local/tomcat/webapps/ROOT.war
+                        docker-compose up -d vproapp
+                    """
+                }
             }
         }
     }
