@@ -136,8 +136,16 @@ pipeline{
                 withAWS(credentials: s3Credentials, region: S3_BUCKET_REGION) {
                     echo 'deploying to app server'
                     sh"""
-                        aws s3 cp s3://${S3_BUCKET_NAME}/vprofile-v2.war ./webapps/ROOT.war
-                        docker-compose up -d vproapp
+                        #validte the artifact
+                        if aws s3 ls s3://${S3_BUCKET_NAME}/vprofile-v2.war --region ${S3_BUCKET_REGION}; then
+                            echo "Artifact found"
+                        else
+                            echo "Artifact not found"
+                            exit 1
+                        fi
+                        #download the artifact
+                        aws s3 cp s3://${S3_BUCKET_NAME}/vprofile-v2.war vproapp:/usr/local/tomcat/webapps/
+                        docker restart vproapp
                     """
                 }
             }
