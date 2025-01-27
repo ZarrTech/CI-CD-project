@@ -89,16 +89,16 @@ pipeline{
         //         }
         //     }
         // }
-        stage('docker build'){
-            steps{
-                script{
-                docker.build('vproapp', './app')
-                }
-                sh"""
-                   docker-compose up -d vproapp
-                """
-            }
-        }
+        // stage('docker build'){
+        //     steps{
+        //         script{
+        //         docker.build('vproapp', './app')
+        //         }
+        //         sh"""
+        //            docker-compose up -d vproapp
+        //         """
+        //     }
+        // }
         // stage('upload to s3'){
         //     steps{
         //       script{
@@ -148,7 +148,7 @@ pipeline{
 
                         # Copy the WAR file to the Tomcat container
                         docker cp ./ROOT.war vproapp:/usr/local/tomcat/webapps/ROOT.war
-                        docker restart vproapp
+                        docker-compose restart vproapp
                     """
                 }
             }
