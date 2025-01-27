@@ -99,38 +99,38 @@ pipeline{
         //         """
         //     }
         // }
-        stage('upload to s3'){
-            steps{
-              script{
-                try {
-                    withAWS(credentials: s3Credentials, region: S3_BUCKET_REGION) {
-                        echo 'uploading to s3'
+        // stage('upload to s3'){
+        //     steps{
+        //       script{
+        //         try {
+        //             withAWS(credentials: s3Credentials, region: S3_BUCKET_REGION) {
+        //                 echo 'uploading to s3'
                         
-                        //define bucket name and artifact
-                        def BUCKET_NAME = 'vproartifact'
-                        def ARTIFACT_PATH = 'target/vprofile-v2.war'
+        //                 //define bucket name and artifact
+        //                 def BUCKET_NAME = 'vproartifact'
+        //                 def ARTIFACT_PATH = 'target/vprofile-v2.war'
 
-                        sh"""
-                         if [ ! -f "$ARTIFACT_PATH" ] || [ ! -s "$ARTIFACT_PATH" ]; then
-                            echo "Artifact not found or empty"
-                            exit 1
-                         fi
-                            aws --version
-                            aws s3 ls s3://${BUCKET_NAME} --region ${S3_BUCKET_REGION}
-                            ls -l target/
-                            echo "uploading ${ARTIFACT_PATH} to s3://${BUCKET_NAME}"      
-                            aws s3 cp ${ARTIFACT_PATH} s3://${BUCKET_NAME}/ --storage-class STANDARD --expected-size 83500000
-                        """
-                    }
-                }
-                catch (Exception e) {
-                    echo "error occured during artifact upload: ${e.getMessage()}"
-                    currentBuild.result = 'FAILURE'
-                    error('stopping the pipline due to s3 upload failure.')
-                }
-              }
-            }
-        }
+        //                 sh"""
+        //                  if [ ! -f "$ARTIFACT_PATH" ] || [ ! -s "$ARTIFACT_PATH" ]; then
+        //                     echo "Artifact not found or empty"
+        //                     exit 1
+        //                  fi
+        //                     aws --version
+        //                     aws s3 ls s3://${BUCKET_NAME} --region ${S3_BUCKET_REGION}
+        //                     ls -l target/
+        //                     echo "uploading ${ARTIFACT_PATH} to s3://${BUCKET_NAME}"      
+        //                     aws s3 cp ${ARTIFACT_PATH} s3://${BUCKET_NAME}/ --storage-class STANDARD --expected-size 83500000
+        //                 """
+        //             }
+        //         }
+        //         catch (Exception e) {
+        //             echo "error occured during artifact upload: ${e.getMessage()}"
+        //             currentBuild.result = 'FAILURE'
+        //             error('stopping the pipline due to s3 upload failure.')
+        //         }
+        //       }
+        //     }
+        // }
         stage('deploy to app server'){
             steps{
                 withAWS(credentials: s3Credentials, region: S3_BUCKET_REGION) {
