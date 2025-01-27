@@ -89,16 +89,16 @@ pipeline{
         //         }
         //     }
         // }
-        stage('docker build'){
-            steps{
-                script{
-                docker.build('vproapp', './app')
-                }
-                sh"""
-                   docker-compose up -d vproapp
-                """
-            }
-        }
+        // stage('docker build'){
+        //     steps{
+        //         script{
+        //         docker.build('vproapp', './app')
+        //         }
+        //         sh"""
+        //            docker-compose up -d vproapp
+        //         """
+        //     }
+        // }
         stage('upload to s3'){
             steps{
               script{
