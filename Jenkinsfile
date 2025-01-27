@@ -144,7 +144,10 @@ pipeline{
                             exit 1
                         fi
                         #download the artifact
-                        aws s3 cp s3://${S3_BUCKET_NAME}/vprofile-v2.war vproapp:/usr/local/tomcat/webapps/
+                        aws s3 cp s3://${S3_BUCKET_NAME}/vprofile-v2.war ./ROOT.war
+
+                        # Copy the WAR file to the Tomcat container
+                        docker cp ./ROOT.war vproapp:/usr/local/tomcat/webapps/
                         docker restart vproapp
                     """
                 }
