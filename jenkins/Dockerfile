@@ -12,6 +12,10 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# Install AWS CLI
+RUN apt-get update && \
+    apt-get install -y awscli
+
 # Add Jenkins user to the Docker group
 RUN usermod -aG docker jenkins
 
