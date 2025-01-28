@@ -28,16 +28,16 @@ pipeline{
                 git branch: 'atom', url: 'https://github.com/hkhcoder/vprofile-project.git'
             }
         }
-        stage('Fetch Dockerfile') {
-            steps {
-                sh """
-                    rm -rf temp-repo
-                    git clone git@github.com:ZarrTech/CI-CD-project.git temp-repo
-                    cp -r temp-repo/Jenkinsfile temp-repo/Vagrantfile temp-repo/app temp-repo/configs temp-repo/db temp-repo/docker-compose.yaml temp-repo/jenkins temp-repo/web .
-                    rm -rf temp-repo
-                """
-            }
-        }
+        // stage('Fetch Dockerfile') {
+        //     steps {
+        //         sh """
+        //             rm -rf temp-repo
+        //             git clone git@github.com:ZarrTech/CI-CD-project.git temp-repo
+        //             cp -r temp-repo/Jenkinsfile temp-repo/Vagrantfile temp-repo/app temp-repo/configs temp-repo/db temp-repo/docker-compose.yaml temp-repo/jenkins temp-repo/web .
+        //             rm -rf temp-repo
+        //         """
+        //     }
+        // }
         stage('Verify JAVA_HOME') {
             steps {
                 sh 'echo $JAVA_HOME'

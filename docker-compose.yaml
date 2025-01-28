@@ -46,12 +46,12 @@ services:
     volumes:
       - ./webapps:/usr/local/tomcat/webapps
     expose:
-      - "8082"
+      - "8080"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8082"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      interval: 30s
+      timeout: 60s
+      retries: 30
  
 
   
@@ -64,7 +64,24 @@ services:
     volumes:
       - vprodbdata:/var/lib/mysql
     environment:
-    - MYSQL_ROOT_PASSWORD=vprodbpass
+    - MYSQL_ROOT_PASSWORD=admin123
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: vprorabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: test
+      RABBITMQ_DEFAULT_PASS: test
+
+
+  memcached:
+    image: memcached:1.5
+    container_name: vpromemcached
+    ports:
+      - "11211:11211"
 
   vproweb:
     build: 
