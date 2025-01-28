@@ -14,7 +14,7 @@ pipeline{
         PATH = "${JAVA_HOME}/bin:${env.PATH}"
         S3_BUCKET_NAME = 'vproartifact'
         S3_BUCKET_REGION = 'us-east-1'
-        s3Credentials= 's3Credentials'
+        s3Credentials= 's3Credencials'
     }
 
     tools{
