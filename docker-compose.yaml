@@ -5,7 +5,6 @@ services:
     container_name: vprojenkins
     user: root
     privileged: true
-    image: zarrcloud/vprofilejenkins
     ports:
       - "8080:8080"
       - "50000:50000"
@@ -39,7 +38,6 @@ services:
       - nexus_data:/nexus-data
 
   vproapp:
-    image: zarrcloud/vprofileapp
     build:
       context: ./app
     container_name: vproapp
@@ -47,14 +45,19 @@ services:
       - "8082:8080"
     volumes:
       - ./webapps:/usr/local/tomcat/webapps
-
+    expose:
+      - "8082"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8082"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
  
 
   
   mysql:
     build:
       context: ./db
-    image: zarrcloud/vprofiledb
     container_name: vprodb
     ports: 
       - "3306:3306"
@@ -66,13 +69,13 @@ services:
   vproweb:
     build: 
       context: ./web
-    image: zarrcloud/vprofileweb
     container_name: vproweb
     ports:
       - "80:80"
     depends_on:
       - vproapp
-  
+    volumes:
+    - ./nginx.conf:/etc/nginx/conf.d/default.conf
 
 volumes:
   jenkins_home: {}

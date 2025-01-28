@@ -62,7 +62,7 @@ pipeline{
         }
         stage('sonarqube analysis'){
             environment{
-                scannerHome = tool 'sonar6.2'
+                scannerHome = tool 'sonar7.0'
             }
             steps{
                 withSonarQubeEnv('sonarserver'){
