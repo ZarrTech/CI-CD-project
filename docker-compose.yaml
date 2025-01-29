@@ -30,13 +30,6 @@ services:
       - sonarqube_logs:/opt/sonarqube/logs
       - sonarqube_temp:/opt/sonarqube/temp
   
-  nexus:
-    image: sonatype/nexus3
-    ports:
-      - "8081:8081"
-    volumes:
-      - nexus_data:/nexus-data
-
   vproapp:
     build:
       context: ./app
@@ -68,6 +61,7 @@ services:
       - vprodbdata:/var/lib/mysql
     environment:
     - MYSQL_ROOT_PASSWORD=admin123
+    - MYSQL_DATABASE=accounts
     networks:
       - app_network
       - server_network
