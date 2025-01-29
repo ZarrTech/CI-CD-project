@@ -2,7 +2,7 @@ FROM mysql:8.0.40-debian
 LABEL project="vprofile"
 LABEL name="zarrcloud"
 
-ENV MYSQL_ROOT-PASSWORD='vprodbpass'
+ENV MYSQL_ROOT-PASSWORD='admin123'
 ENV MYSQL_DATABASE='accounts'
 
 ADD db_backup.sql /docker-entrypoint-initdb.d/db_backup.sql
